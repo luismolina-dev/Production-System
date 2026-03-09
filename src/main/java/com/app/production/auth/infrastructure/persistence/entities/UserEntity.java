@@ -29,7 +29,7 @@ public class UserEntity implements UserDetails {
     @Column(unique = true)
     private String username;
     private String password;
-    private String documents_name;
+    private String document_name;
 
     @Enumerated(EnumType.STRING)
     private Role role;

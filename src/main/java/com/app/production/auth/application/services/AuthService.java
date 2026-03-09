@@ -9,6 +9,7 @@ import com.app.production.auth.domain.entities.Users;
 import com.app.production.auth.domain.interfaces.UserPersistencePort;
 import com.app.production.auth.infrastructure.security.JwtToken;
 import com.app.production.auth.infrastructure.persistence.entities.UserEntity;
+import com.app.production.common.exceptions.ResourceAlreadyExists;
 import com.app.production.common.exceptions.ResourceNotFound;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,6 +56,9 @@ public class AuthService {
     }
 
     public UserResponseDto register(UserDto userDto) {
+        if (userPersistencePort.existsByUsername(userDto.getUsername())) {
+            throw new ResourceAlreadyExists("The username " + userDto.getUsername() + " already exists");
+        }
         Users user = userMapper.toDomain(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Users savedUser = userPersistencePort.save(user);

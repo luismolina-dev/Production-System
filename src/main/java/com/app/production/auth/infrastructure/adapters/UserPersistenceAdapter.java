@@ -41,9 +41,7 @@ public class UserPersistenceAdapter implements UserPersistencePort {
     }
 
     @Override
-    public boolean existsById(UUID id) {
-        return userRepository.existsById(id);
-    }
+    public boolean existsById(UUID id) { return userRepository.existsById(id); }
 
     @Override
     public boolean existsByUsername(String username) {
@@ -51,7 +49,5 @@ public class UserPersistenceAdapter implements UserPersistencePort {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        userRepository.deleteById(id);
-    }
+    public void deleteById(UUID id) { userRepository.deleteById(id); }
 }

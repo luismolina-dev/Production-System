@@ -1,6 +1,5 @@
 package com.app.production.auth.domain.interfaces;
 
-import com.app.production.auth.application.dtos.UserResponseDto;
 import com.app.production.auth.domain.entities.Users;
 
 import java.util.Optional;

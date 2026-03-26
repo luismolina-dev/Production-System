@@ -3,7 +3,7 @@ package com.app.production.organization.application.services;
 import com.app.production.organization.application.dtos.UserDto;
 import com.app.production.organization.application.dtos.UserResponseDto;
 import com.app.production.organization.application.mappers.UserMapper;
-import com.app.production.organization.domain.entities.Users;
+import com.app.production.organization.domain.entities.User;
 import com.app.production.organization.domain.interfaces.UserPersistencePort;
 import com.app.production.common.exceptions.ResourceNotFound;
 import org.springframework.data.domain.Page;
@@ -28,25 +28,25 @@ public class UserService {
     }
 
     public UserResponseDto getById(UUID id) {
-        Users user = userPersistencePort.findById(id)
+        User user = userPersistencePort.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("User with id " + id + " not found"));
 
         return userMapper.toResponseDto(user);
     }
 
     public UserResponseDto getByUsername(String username) {
-        Users user = userPersistencePort.findByUsername(username)
+        User user = userPersistencePort.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFound("User with username " + username + " not found"));
 
         return userMapper.toResponseDto(user);
     }
 
     public UserResponseDto UpdateUser(UUID id, UserDto userDto) {
-        Users user = userPersistencePort.findById(id)
+        User user = userPersistencePort.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("User with id " + id + " not found"));
         userMapper.updateDomainFromDto(userDto, user);
 
-        Users updatedUser = userPersistencePort.save(user);
+        User updatedUser = userPersistencePort.save(user);
 
         return userMapper.toResponseDto(updatedUser);
     }

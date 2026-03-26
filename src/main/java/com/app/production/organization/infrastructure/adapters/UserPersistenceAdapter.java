@@ -1,8 +1,7 @@
 package com.app.production.organization.infrastructure.adapters;
 
-import com.app.production.organization.domain.entities.Users;
+import com.app.production.organization.domain.entities.User;
 import com.app.production.organization.domain.interfaces.UserPersistencePort;
-import com.app.production.organization.infrastructure.persistence.entities.UserEntity;
 import com.app.production.organization.infrastructure.repositories.UserRepository;
 import com.app.production.organization.application.mappers.UserMapper;
 import org.springframework.data.domain.Page;
@@ -24,26 +23,26 @@ public class UserPersistenceAdapter implements UserPersistencePort {
     }
 
     @Override
-    public Users save(Users user) {
-        UserEntity entity = userMapper.toJpaEntity(user);
-        UserEntity savedEntity = userRepository.save(entity);
+    public User save(User user) {
+        com.app.production.organization.infrastructure.persistence.entities.User entity = userMapper.toJpaEntity(user);
+        com.app.production.organization.infrastructure.persistence.entities.User savedEntity = userRepository.save(entity);
         return userMapper.toDomain(savedEntity);
     }
 
     @Override
-    public Page<Users> findAll(Pageable pageable) {
+    public Page<User> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)
                 .map(userMapper::toDomain);
     }
 
     @Override
-    public Optional<Users> findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(userMapper::toDomain);
     }
 
     @Override
-    public Optional<Users> findById(UUID id) {
+    public Optional<User> findById(UUID id) {
         return userRepository.findById(id)
                 .map(userMapper::toDomain);
     }

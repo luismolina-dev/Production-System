@@ -2,26 +2,28 @@ package com.app.production.organization.application.mappers;
 
 import com.app.production.organization.application.dtos.UserDto;
 import com.app.production.organization.application.dtos.UserResponseDto;
-import com.app.production.organization.domain.entities.Users;
-import com.app.production.organization.infrastructure.persistence.entities.UserEntity;
+import com.app.production.organization.domain.entities.User;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
     // Domain to DTO
-    UserResponseDto toResponseDto(Users domain);
+    UserResponseDto toResponseDto(User domain);
 
     // DTO to Domain
     @Mapping(target = "id", ignore = true)
-    Users toDomain(UserDto dto);
+    User toDomain(UserDto dto);
 
     // Domain to JPA Entity
-    UserEntity toJpaEntity(Users domain);
+    // 'authorities' is a computed property in UserDetails — ignore it for mapping
+    @Mapping(target = "authorities", ignore = true)
+    com.app.production.organization.infrastructure.persistence.entities.User toJpaEntity(User domain);
 
     // JPA Entity to Domain
-    Users toDomain(UserEntity entity);
+    User toDomain(com.app.production.organization.infrastructure.persistence.entities.User entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateDomainFromDto(UserDto dto, @MappingTarget Users domain);
+    @Mapping(target = "id", ignore = true)
+    void updateDomainFromDto(UserDto dto, @MappingTarget User domain);
 }

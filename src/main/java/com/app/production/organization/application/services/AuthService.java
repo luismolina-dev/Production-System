@@ -5,10 +5,9 @@ import com.app.production.organization.application.dtos.AuthResponse;
 import com.app.production.organization.application.dtos.UserDto;
 import com.app.production.organization.application.dtos.UserResponseDto;
 import com.app.production.organization.application.mappers.UserMapper;
-import com.app.production.organization.domain.entities.Users;
+import com.app.production.organization.domain.entities.User;
 import com.app.production.organization.domain.interfaces.UserPersistencePort;
 import com.app.production.organization.infrastructure.security.JwtToken;
-import com.app.production.organization.infrastructure.persistence.entities.UserEntity;
 import com.app.production.common.exceptions.ResourceAlreadyExists;
 import com.app.production.common.exceptions.ResourceNotFound;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,11 +41,11 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        Users user = userPersistencePort.findByUsername(request.getUsername())
+        User user = userPersistencePort.findByUsername(request.getUsername())
                 .orElseThrow(() -> new ResourceNotFound("User not found"));
 
-        // We need to convert to UserEntity (UserDetails) for JwtToken
-        UserEntity userDetails = userMapper.toJpaEntity(user);
+        // We need to convert to User (UserDetails) for JwtToken
+        com.app.production.organization.infrastructure.persistence.entities.User userDetails = userMapper.toJpaEntity(user);
         String token = jwtToken.generateToken(userDetails);
 
         AuthResponse response = new AuthResponse();
@@ -59,9 +58,9 @@ public class AuthService {
         if (userPersistencePort.existsByUsername(userDto.getUsername())) {
             throw new ResourceAlreadyExists("The username " + userDto.getUsername() + " already exists");
         }
-        Users user = userMapper.toDomain(userDto);
+        User user = userMapper.toDomain(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Users savedUser = userPersistencePort.save(user);
+        User savedUser = userPersistencePort.save(user);
         return userMapper.toResponseDto(savedUser);
     }
 }

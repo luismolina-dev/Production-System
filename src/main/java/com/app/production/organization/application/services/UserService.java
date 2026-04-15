@@ -1,11 +1,11 @@
 package com.app.production.organization.application.services;
 
-import com.app.production.organization.application.dtos.UserDto;
-import com.app.production.organization.application.dtos.UserResponseDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserResponseDto;
 import com.app.production.organization.application.mappers.UserMapper;
 import com.app.production.organization.domain.entities.User;
 import com.app.production.organization.domain.interfaces.UserPersistencePort;
-import com.app.production.common.exceptions.ResourceNotFound;
+import com.app.production.organization.domain.exceptions.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,21 +29,21 @@ public class UserService {
 
     public UserResponseDto getById(UUID id) {
         User user = userPersistencePort.findById(id)
-                .orElseThrow(() -> new ResourceNotFound("User with id " + id + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         return userMapper.toResponseDto(user);
     }
 
     public UserResponseDto getByUsername(String username) {
         User user = userPersistencePort.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFound("User with username " + username + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         return userMapper.toResponseDto(user);
     }
 
     public UserResponseDto UpdateUser(UUID id, UserDto userDto) {
         User user = userPersistencePort.findById(id)
-                .orElseThrow(() -> new ResourceNotFound("User with id " + id + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
         userMapper.updateDomainFromDto(userDto, user);
 
         User updatedUser = userPersistencePort.save(user);
@@ -53,7 +53,7 @@ public class UserService {
 
     public void deleteById(UUID id) {
         if (!userPersistencePort.existsById(id)) {
-            throw new ResourceNotFound("User with id " + id + " not found");
+            throw new UserNotFoundException(id);
         }
         userPersistencePort.deleteById(id);
     }

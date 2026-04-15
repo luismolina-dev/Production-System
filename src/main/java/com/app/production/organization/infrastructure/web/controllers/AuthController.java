@@ -1,9 +1,9 @@
-package com.app.production.organization.infrastructure.controllers;
+package com.app.production.organization.infrastructure.web.controllers;
 
-import com.app.production.organization.application.dtos.AuthRequest;
-import com.app.production.organization.application.dtos.AuthResponse;
-import com.app.production.organization.application.dtos.UserDto;
-import com.app.production.organization.application.dtos.UserResponseDto;
+import com.app.production.organization.infrastructure.web.dtos.auth.AuthRequest;
+import com.app.production.organization.infrastructure.web.dtos.auth.AuthResponse;
+import com.app.production.organization.infrastructure.web.dtos.user.UserDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserResponseDto;
 import com.app.production.organization.application.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

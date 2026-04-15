@@ -7,8 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface
-UserPersistencePort {
+public interface UserPersistencePort {
     User save(User user);
     Page<User> findAll(Pageable pageable);
     Optional<User> findByUsername(String username);

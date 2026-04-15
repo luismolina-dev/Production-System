@@ -1,7 +1,7 @@
 package com.app.production.organization.infrastructure.security.config;
 
-import com.app.production.organization.infrastructure.repositories.UserRepository;
-import com.app.production.common.exceptions.ResourceNotFound;
+import com.app.production.organization.infrastructure.persistence.repositories.UserRepository;
+import com.app.production.organization.domain.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return  username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFound("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     @Bean

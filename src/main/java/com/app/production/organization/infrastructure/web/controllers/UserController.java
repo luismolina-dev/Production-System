@@ -1,7 +1,7 @@
-package com.app.production.organization.infrastructure.controllers;
+package com.app.production.organization.infrastructure.web.controllers;
 
-import com.app.production.organization.application.dtos.UserDto;
-import com.app.production.organization.application.dtos.UserResponseDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserResponseDto;
 import com.app.production.organization.application.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

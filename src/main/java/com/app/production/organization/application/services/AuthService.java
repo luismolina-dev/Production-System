@@ -1,15 +1,15 @@
 package com.app.production.organization.application.services;
 
-import com.app.production.organization.application.dtos.AuthRequest;
-import com.app.production.organization.application.dtos.AuthResponse;
-import com.app.production.organization.application.dtos.UserDto;
-import com.app.production.organization.application.dtos.UserResponseDto;
+import com.app.production.organization.infrastructure.web.dtos.auth.AuthRequest;
+import com.app.production.organization.infrastructure.web.dtos.auth.AuthResponse;
+import com.app.production.organization.infrastructure.web.dtos.user.UserDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserResponseDto;
 import com.app.production.organization.application.mappers.UserMapper;
 import com.app.production.organization.domain.entities.User;
 import com.app.production.organization.domain.interfaces.UserPersistencePort;
 import com.app.production.organization.infrastructure.security.JwtToken;
-import com.app.production.common.exceptions.ResourceAlreadyExists;
-import com.app.production.common.exceptions.ResourceNotFound;
+import com.app.production.organization.domain.exceptions.UserAlreadyExistsException;
+import com.app.production.organization.domain.exceptions.UserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,11 +42,9 @@ public class AuthService {
         );
 
         User user = userPersistencePort.findByUsername(request.getUsername())
-                .orElseThrow(() -> new ResourceNotFound("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(request.getUsername()));
 
-        // We need to convert to User (UserDetails) for JwtToken
-        com.app.production.organization.infrastructure.persistence.entities.User userDetails = userMapper.toJpaEntity(user);
-        String token = jwtToken.generateToken(userDetails);
+        String token = jwtToken.generateToken(user);
 
         AuthResponse response = new AuthResponse();
         response.setToken(token);
@@ -56,7 +54,7 @@ public class AuthService {
 
     public UserResponseDto register(UserDto userDto) {
         if (userPersistencePort.existsByUsername(userDto.getUsername())) {
-            throw new ResourceAlreadyExists("The username " + userDto.getUsername() + " already exists");
+            throw new UserAlreadyExistsException(userDto.getUsername());
         }
         User user = userMapper.toDomain(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));

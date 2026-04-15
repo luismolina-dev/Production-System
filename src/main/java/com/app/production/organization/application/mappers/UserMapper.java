@@ -1,29 +1,27 @@
 package com.app.production.organization.application.mappers;
 
-import com.app.production.organization.application.dtos.UserDto;
-import com.app.production.organization.application.dtos.UserResponseDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserDto;
+import com.app.production.organization.infrastructure.web.dtos.user.UserResponseDto;
 import com.app.production.organization.domain.entities.User;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    // Domain to DTO
+    // Domain → DTO
+    @Mapping(target = "role", source = "profile.role")
     UserResponseDto toResponseDto(User domain);
 
-    // DTO to Domain
+    // DTO → Domain
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
+    @Mapping(target = "profile.role", source = "role")
     User toDomain(UserDto dto);
 
-    // Domain to JPA Entity
-    // 'authorities' is a computed property in UserDetails — ignore it for mapping
-    @Mapping(target = "authorities", ignore = true)
-    com.app.production.organization.infrastructure.persistence.entities.User toJpaEntity(User domain);
-
-    // JPA Entity to Domain
-    User toDomain(com.app.production.organization.infrastructure.persistence.entities.User entity);
-
+    // Update existing domain object from DTO (partial update)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
+    @Mapping(target = "profile.role", source = "role")
     void updateDomainFromDto(UserDto dto, @MappingTarget User domain);
 }

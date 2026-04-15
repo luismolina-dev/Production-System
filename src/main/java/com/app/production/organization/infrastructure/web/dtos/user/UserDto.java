@@ -1,4 +1,4 @@
-package com.app.production.organization.application.dtos;
+package com.app.production.organization.infrastructure.web.dtos.user;
 
 import com.app.production.organization.domain.entities.Role;
 import lombok.Data;

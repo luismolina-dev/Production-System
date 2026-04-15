@@ -1,9 +1,10 @@
-package com.app.production.organization.infrastructure.adapters;
+package com.app.production.organization.infrastructure.persistence.adapters;
 
 import com.app.production.organization.domain.entities.User;
 import com.app.production.organization.domain.interfaces.UserPersistencePort;
-import com.app.production.organization.infrastructure.repositories.UserRepository;
-import com.app.production.organization.application.mappers.UserMapper;
+import com.app.production.organization.infrastructure.persistence.entities.IUser;
+import com.app.production.organization.infrastructure.persistence.repositories.UserRepository;
+import com.app.production.organization.infrastructure.web.mappers.UserEntityMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -15,36 +16,36 @@ import java.util.UUID;
 public class UserPersistenceAdapter implements UserPersistencePort {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserEntityMapper userEntityMapper;
 
-    public UserPersistenceAdapter(UserRepository userRepository, UserMapper userMapper) {
+    public UserPersistenceAdapter(UserRepository userRepository, UserEntityMapper userEntityMapper) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
+        this.userEntityMapper = userEntityMapper;
     }
 
     @Override
     public User save(User user) {
-        com.app.production.organization.infrastructure.persistence.entities.User entity = userMapper.toJpaEntity(user);
-        com.app.production.organization.infrastructure.persistence.entities.User savedEntity = userRepository.save(entity);
-        return userMapper.toDomain(savedEntity);
+        IUser entity = userEntityMapper.toJpaEntity(user);
+        IUser savedEntity = userRepository.save(entity);
+        return userEntityMapper.toDomain(savedEntity);
     }
 
     @Override
     public Page<User> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)
-                .map(userMapper::toDomain);
+                .map(userEntityMapper::toDomain);
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .map(userMapper::toDomain);
+                .map(userEntityMapper::toDomain);
     }
 
     @Override
     public Optional<User> findById(UUID id) {
         return userRepository.findById(id)
-                .map(userMapper::toDomain);
+                .map(userEntityMapper::toDomain);
     }
 
     @Override
